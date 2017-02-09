@@ -1,0 +1,33 @@
+tasks:
+  get_series:
+    exists_series:
+      - /mnt/nsa_videos/tv shows/
+    discover:
+      what:
+        - trakt_list:
+            username: 
+            account: 
+            list: ishows-added
+            type: shows
+        - filesystem: /mnt/nsa_videos/tv shows
+      from:
+        - rarbg:
+            category:
+              - x264 720p
+              - HDTV
+            sorted_by: seeders
+    configure_series:
+      from:
+        trakt_list:
+          username: 
+          account: 
+          list: ishows-added
+          type: shows
+        filesystem: /mnt/nsa_videos/tv shows
+      settings:
+        quality: 720p+ hdtv+
+    trakt_lookup: yes
+    if:
+      - trakt_watched: reject
+      - trakt_in_collection: reject
+    download: /mnt/nsa_downloads/transmission/torrents/
