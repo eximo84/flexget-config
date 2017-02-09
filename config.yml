@@ -1,43 +1,44 @@
 tasks:
-  get_series:
-    # This plugin will reject all entries that represent an episode of a series that is already on disk.
-    exists_series:
-      - /mnt/nsa_videos/tv shows/
-    # Creates entries based on search results. Queries are produced based on another input plugin(s).
+  get_episodes:
+    #input - search my trakt list for the next episode that requires collecting
     discover:
       what:
-        - trakt_list:
+        - next_trakt_episodes:
             username: 
             account: 
-            list: ishows-added
-            type: shows
-        - filesystem: /mnt/nsa_videos/tv shows
+            context: collected
+            list: Flexget-Shows
+            strip_dates: yes
       from:
         - rarbg:
-            category:
-              - x264 720p
-              - HDTV
+            category: [18, 41]
             sorted_by: seeders
-    # Generates series plugin configuration from titles produced by any input
+    #filter
+    torrent_alive: yes
+    content_size:
+      max: 3072
+      min: 60
+    content_filter:
+      reject:
+        - '*.rar'
+        - '*.zip'
     configure_series:
       settings:
-        quality: 720p+ hdtv+
+        quality: 720p hdtv
       from:
-#        trakt_list:
-#          username: 
-#          account:
-#          list: ishows-added
-#          type: shows
-#        filesystem: /mnt/nsa_videos/tv shows
-        next_trakt_episodes:
+        trakt_list:
           username:
-          account:
-          context: watched
-          list: ishows-added
-#        accept_all: yes
-#        set_series_begin: yes
-    trakt_lookup: yes
+          account: 
+          list: Flexget-Shows
+          type: shows
+          strip_dates: yes
+    trakt_lookup:
+      username: dave_parki_uk
     if:
       - trakt_watched: reject
-      - trakt_in_collection: reject
-    download: /mnt/nsa_downloads/transmission/torrents/
+      - trakt_collected: reject
+    #output
+#    download: ~/torrents/
+    transmission:
+      host: 192.168.1.3
+      port: 9091
