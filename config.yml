@@ -1,7 +1,9 @@
 tasks:
   get_series:
+    # This plugin will reject all entries that represent an episode of a series that is already on disk.
     exists_series:
       - /mnt/nsa_videos/tv shows/
+    # Creates entries based on search results. Queries are produced based on another input plugin(s).
     discover:
       what:
         - trakt_list:
@@ -16,16 +18,24 @@ tasks:
               - x264 720p
               - HDTV
             sorted_by: seeders
+    # Generates series plugin configuration from titles produced by any input
     configure_series:
-      from:
-        trakt_list:
-          username: 
-          account: 
-          list: ishows-added
-          type: shows
-        filesystem: /mnt/nsa_videos/tv shows
       settings:
         quality: 720p+ hdtv+
+      from:
+#        trakt_list:
+#          username: 
+#          account:
+#          list: ishows-added
+#          type: shows
+#        filesystem: /mnt/nsa_videos/tv shows
+        next_trakt_episodes:
+          username:
+          account:
+          context: watched
+          list: ishows-added
+#        accept_all: yes
+#        set_series_begin: yes
     trakt_lookup: yes
     if:
       - trakt_watched: reject
