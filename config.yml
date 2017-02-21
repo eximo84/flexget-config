@@ -71,7 +71,7 @@ tasks:
         for_accepted:
           - tor_count=$(</home/pi/scripts/count.txt); inc=$(($tor_count+1)); echo $inc > /home/pi/scripts/count.txt; sleep 2
           
-  get_episodes_showrss:
+  get_episodes_showrss_hd:
     #input
     rss: http://showrss.info/user/127016.rss?magnets=true&namespaces=true&name=null&quality=null&re=null
     #filter
