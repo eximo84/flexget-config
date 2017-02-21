@@ -1,18 +1,7 @@
 tasks:
-  get_episodes:
-    #input - search my trakt list for the next episode that requires collecting
-    discover:
-      what:
-        - next_trakt_episodes:
-            username: 
-            account: 
-            context: collected
-            list: Flexget-Shows
-            strip_dates: yes
-      from:
-        - rarbg:
-            category: [18, 41]
-            sorted_by: seeders
+  get_episodes_trakt:
+    #input
+    rss: https://eztv.ag/ezrss.xml 
     #filter
     torrent_alive: yes
     content_size:
@@ -24,21 +13,93 @@ tasks:
         - '*.zip'
     configure_series:
       settings:
-        quality: 720p hdtv
+        quality: hdtv <720p
       from:
         trakt_list:
-          username:
-          account: 
+          username: dave_parki_uk
+          account: dave_parki_uk
           list: Flexget-Shows
           type: shows
           strip_dates: yes
     trakt_lookup:
       username: dave_parki_uk
     if:
-      - trakt_watched: reject
+#      - trakt_watched: reject
       - trakt_collected: reject
     #output
-#    download: ~/torrents/
     transmission:
       host: 192.168.1.3
       port: 9091
+    exec:
+      on_output:
+        for_accepted:
+          - tor_count=$(</home/pi/scripts/count.txt); inc=$(($tor_count+1)); echo $inc > /home/pi/scripts/count.txt; sleep 2
+  
+  get_episodes_trakt_hd:
+    #input
+    rss: https://eztv.ag/ezrss.xml
+    #filter
+    torrent_alive: yes
+    content_size:
+      max: 3072
+      min: 60
+    content_filter:
+      reject:
+        - '*.rar'
+        - '*.zip'
+    configure_series:
+      settings:
+        quality: 720p hdtv+
+      from:
+        trakt_list:
+          username: dave_parki_uk
+          account: dave_parki_uk
+          list: Flexget-Shows-HD
+          type: shows
+          strip_dates: yes
+    trakt_lookup:
+      username: dave_parki_uk
+    if:
+#      - trakt_watched: reject
+      - trakt_collected: reject
+    #output
+    transmission:
+      host: 192.168.1.3
+      port: 9091
+    exec:
+      on_output:
+        for_accepted:
+          - tor_count=$(</home/pi/scripts/count.txt); inc=$(($tor_count+1)); echo $inc > /home/pi/scripts/count.txt; sleep 2
+          
+  get_episodes_showrss:
+    #input
+    rss: http://showrss.info/user/127016.rss?magnets=true&namespaces=true&name=null&quality=null&re=null
+    #filter
+    torrent_alive: yes
+    content_filter:
+      reject:
+        - '*.rar'
+        - '*.zip'
+    configure_series:
+      settings:
+        #quality: 720p
+      from:
+        trakt_list:
+          username: dave_parki_uk
+          account: dave_parki_uk
+          list: Flexget-Shows-HD
+          type: shows
+          strip_dates: yes
+    trakt_lookup:
+      username: dave_parki_uk
+    if:
+#      - trakt_watched: reject
+      - trakt_collected: reject
+    #output
+    transmission:
+      host: 192.168.1.3
+      port: 9091
+    exec:
+      on_output:
+        for_accepted:
+          - tor_count=$(</home/pi/scripts/count.txt); inc=$(($tor_count+1)); echo $inc > /home/pi/scripts/count.txt; sleep 2
